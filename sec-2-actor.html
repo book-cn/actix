@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>参与者 - Actix 用户指南中文版</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Actix——Rust 语言的 actor 框架">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <noscript>
+            <style type="text/css">
+                .javascript-only {
+                    display: none;
+                }
+            </style>
+        </noscript>
+
+    </head>
+    <body class="light">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme;
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="sec-0-quick-start.html">Actix 快速入门</a></li><li><a href="sec-1-getting-started.html"><strong aria-hidden="true">1.</strong> 入门</a></li><li><a href="sec-2-actor.html" class="active"><strong aria-hidden="true">2.</strong> 参与者</a></li><li><a href="sec-3-address.html"><strong aria-hidden="true">3.</strong> 地址</a></li><li><a href="sec-4-context.html"><strong aria-hidden="true">4.</strong> 上下文</a></li><li><a href="sec-5-arbiter.html"><strong aria-hidden="true">5.</strong> Arbiter</a></li><li><a href="sec-6-sync-arbiter.html"><strong aria-hidden="true">6.</strong> SyncArbiter</a></li><li><a href="sec-7-stream.html"><strong aria-hidden="true">7.</strong> Stream</a></li><li><a href="sec-8-io-helpers.html"><strong aria-hidden="true">8.</strong> IO 助手</a></li><li><a href="sec-9-supervisor.html"><strong aria-hidden="true">9.</strong> Supervisor</a></li><li><a href="sec-10-registry.html"><strong aria-hidden="true">10.</strong> Registry</a></li><li><a href="sec-11-helper-actors.html"><strong aria-hidden="true">11.</strong> 助手参与者</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons javascript-only">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Actix 用户指南中文版</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                </div>
+                <div id="searchresults-outer" class="searchresults-outer">
+                    <div class="searchresults-header" id="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="sec-2-actor.html#a参与者" id="a参与者"><h1>参与者</h1></a>
+<p>Actix 是一个 rust 库，为开发并发应用程序提供了框架。</p>
+<p>Actix 建立在<a href="https://zh.wikipedia.org/wiki/%E5%8F%83%E8%88%87%E8%80%85%E6%A8%A1%E5%BC%8F">参与者模型（Actor model）</a>之上，它<!--
+-->使应用程序可以编写为一组独立执行而又相互协作的
+“参与者”，这些参与者通过消息进行通信。参与者是封装<!--
+-->状态与行为并且会在由 actix 库提供的 <em>Actor System</em> 中运行的对象。</p>
+<p>参与者在指定的上下文 <a href="./sec-4-context.html"><code>Context&lt;A&gt;</code></a> 中运行。
+该上下文对象只在执行期间可用。每个参与者都有一个独立的<!--
+-->执行上下文。该执行上下文还控制参与者的生命周期。</p>
+<p>参与者仅通过交换消息进行通信。发送方参与者可以<!--
+-->选择等待该响应。不能直接引用参与者，而要通过<!--
+-->地址来引用。</p>
+<p>任何 rust 类型都可以是一个参与者，只需实现 <a href="https://actix.rs/actix/actix/trait.Actor.html"><code>Actor</code></a> trait 即可。</p>
+<p>为了能够处理指定消息，参与者必须提供<!--
+-->这种消息的 <a href="https://actix.rs/actix/actix/trait.Handler.html"><code>Handler&lt;M&gt;</code></a> 实现。所有消息<!--
+-->都是静态类型的。可以使用异步方式处理消息。
+参与者可以产生其他参与者或者将 future 或 stream 添加到执行上下文。
+<code>Actor</code> trait 提供了几种可以控制参与者生命周期的方法。</p>
+<a class="header" href="sec-2-actor.html#a参与者生命周期" id="a参与者生命周期"><h2>参与者生命周期</h2></a>
+<a class="header" href="sec-2-actor.html#a已启动started" id="a已启动started"><h3>已启动（Started）</h3></a>
+<p>参与者总是以 <code>Started</code> 状态启动。在这一状态期间调用了该参与者的 <code>started()</code>
+方法。<code>Actor</code> trait 为这个方法提供了默认实现。
+在这一状态期间可以使用参与者上下文，并且该参与者可以启动更多参与者或者注册<!--
+-->异步流或者做任何其他所需的配置操作。</p>
+<a class="header" href="sec-2-actor.html#a运行中running" id="a运行中running"><h3>运行中（Running）</h3></a>
+<p>调用参与者的 <code>started()</code> 方法后，该参与者会转换为 <code>Running</code> 状态。
+参与者可以无限期地处于 <code>running</code> 状态。</p>
+<a class="header" href="sec-2-actor.html#a停止中stopping" id="a停止中stopping"><h3>停止中（Stopping）</h3></a>
+<p>在以下情况下，参与者的执行状态会变更为 <code>stopping</code> 状态：</p>
+<ul>
+<li>该参与者自身调用了 <code>Context::stop</code></li>
+<li>该参与者的所有地址都已删除。即没有其他参与者引用它。</li>
+<li>在上下文中没有注册事件对象。</li>
+</ul>
+<p>一个参与者可以由 <code>stopping</code> 状态恢复为 <code>running</code> 状态，通过创建一个新的<!--
+-->地址或者添加事件对象，以及通过返回 <code>Running::Continue</code> 实现。</p>
+<p>如果一个参与者状态变更为 <code>stopping</code> 是因为调用了 <code>Context::stop()</code>，
+那么该上下文会立即停止处理接入的消息，并调用
+<code>Actor::stopping()</code>。如果参与者没有恢复到 <code>running</code> 状态，那么<!--
+-->删除所有未处理的消息。</p>
+<p>默认这个方法返回 <code>Running::Stop</code>，确认停止操作。</p>
+<a class="header" href="sec-2-actor.html#a已停止stopped" id="a已停止stopped"><h3>已停止（Stopped）</h3></a>
+<p>如果参与者在停止中状态期间没有修改执行上下文，那么参与者状态会变更<!--
+-->为 <code>Stopped</code>。这个状态被认为是最终状态，此时该参与者会被 drop。</p>
+<a class="header" href="sec-2-actor.html#a消息" id="a消息"><h2>消息</h2></a>
+<p>一个 Actor 通过发送消息与其他参与者通信。在 actix 中的所有<!--
+-->消息都是类型化的。消息可以是任何实现了
+<a href="https://actix.rs/actix/actix/trait.Message.html"><code>Message</code></a> trait 的 rust 类型。<code>Message::Result</code> 定义了其返回值类型。
+让我们来定义一个简单的 <code>Ping</code> 消息——接受这种消息的参与者需要返回
+<code>Result&lt;bool, std::io::Error&gt;</code>。</p>
+<pre><pre class="playpen"><code class="language-rust"># extern crate actix;
+use actix::prelude::*;
+
+struct Ping;
+
+impl Message for Ping {
+    type Result = Result&lt;bool, std::io::Error&gt;;
+}
+#
+# fn main() {}
+</code></pre></pre>
+<a class="header" href="sec-2-actor.html#a产生一个参与者" id="a产生一个参与者"><h2>产生一个参与者</h2></a>
+<p>如何启动一个参与者取决于它的上下文。可通过
+<a href="https://actix.rs/actix/actix/trait.Actor.html"><code>Actor</code></a> trait 的
+<code>start</code> 与 <code>create</code> 实现产生一个新的异步参与者。Actor trait 提供了几种不同的<!--
+-->创建参与者的方式；更详细信息请查看其文档。</p>
+<a class="header" href="sec-2-actor.html#a完整示例" id="a完整示例"><h2>完整示例</h2></a>
+<pre><pre class="playpen"><code class="language-rust"># extern crate actix;
+# extern crate actix_rt;
+use actix::prelude::*;
+
+/// 定义消息
+#[derive(Message)]
+#[rtype(result = &quot;Result&lt;bool, std::io::Error&gt;&quot;)]
+struct Ping;
+
+// 定义参与者
+struct MyActor;
+
+// 为我们的参与者提供 Actor 实现
+impl Actor for MyActor {
+    type Context = Context&lt;Self&gt;;
+
+    fn started(&amp;mut self, ctx: &amp;mut Context&lt;Self&gt;) {
+       println!(&quot;Actor is alive&quot;);
+    }
+
+    fn stopped(&amp;mut self, ctx: &amp;mut Context&lt;Self&gt;) {
+       println!(&quot;Actor is stopped&quot;);
+    }
+}
+
+/// 为 `Ping` 消息定义处理程序
+impl Handler&lt;Ping&gt; for MyActor {
+    type Result = Result&lt;bool, std::io::Error&gt;;
+
+    fn handle(&amp;mut self, msg: Ping, ctx: &amp;mut Context&lt;Self&gt;) -&gt; Self::Result {
+        println!(&quot;Ping received&quot;);
+
+        Ok(true)
+    }
+}
+
+#[actix_rt::main]
+async fn main() {
+    // 在当前线程启动 MyActor
+    let addr = MyActor.start();
+
+    // 发送 Ping 消息。
+    // send() 消息返回 Future 对象，可解析出消息结果
+    let result = addr.send(Ping).await;
+
+    match result {
+        Ok(res) =&gt; println!(&quot;Got result: {}&quot;, res.unwrap()),
+        Err(err) =&gt; println!(&quot;Got error: {}&quot;, err),
+    } 
+}
+</code></pre></pre>
+<a class="header" href="sec-2-actor.html#a以-messageresponse-进行响应" id="a以-messageresponse-进行响应"><h2>以 MessageResponse 进行响应</h2></a>
+<p>我们来看看上例中为 <code>impl Handler</code> 定义的 <code>Result</code> 类型。
+看下我们是如何返回一个 <code>Result&lt;bool, std::io::Error&gt;</code> 的？我们能够以这种类型响应该参与者的<!--
+-->接入消息，是因为它已经为该类型实现了 <code>MessageResponse</code> trait。
+这是该 trait 的定义：</p>
+<pre><code class="language-rust ignore">pub trait MessageResponse&lt;A: Actor, M: Message&gt; {
+    fn handle&lt;R: ResponseChannel&lt;M&gt;&gt;(self, ctx: &amp;mut A::Context, tx: Option&lt;R&gt;);
+}
+</code></pre>
+<p>有时会需要以没有为其实现这个 trait
+的类型来响应接入的消息。当出现这种情况时，我们可以自己实现该 trait。
+以下是一个示例，其中我们以 <code>GotPing</code> 响应 <code>Ping</code> 消息、
+以 <code>GotPong</code> 响应 <code>Pong</code> 消息。</p>
+<pre><pre class="playpen"><code class="language-rust"># extern crate actix;
+# extern crate actix_rt;
+use actix::dev::{MessageResponse, ResponseChannel};
+use actix::prelude::*;
+
+#[derive(Message)]
+#[rtype(result = &quot;Responses&quot;)]
+enum Messages {
+    Ping,
+    Pong,
+}
+
+enum Responses {
+    GotPing,
+    GotPong,
+}
+
+impl&lt;A, M&gt; MessageResponse&lt;A, M&gt; for Responses
+where
+    A: Actor,
+    M: Message&lt;Result = Responses&gt;,
+{
+    fn handle&lt;R: ResponseChannel&lt;M&gt;&gt;(self, _: &amp;mut A::Context, tx: Option&lt;R&gt;) {
+        if let Some(tx) = tx {
+            tx.send(self);
+        }
+    }
+}
+
+// 定义参与者
+struct MyActor;
+
+// 为我们的参与者提供 Actor 实现
+impl Actor for MyActor {
+    type Context = Context&lt;Self&gt;;
+
+    fn started(&amp;mut self, _ctx: &amp;mut Context&lt;Self&gt;) {
+        println!(&quot;Actor is alive&quot;);
+    }
+
+    fn stopped(&amp;mut self, _ctx: &amp;mut Context&lt;Self&gt;) {
+        println!(&quot;Actor is stopped&quot;);
+    }
+}
+
+/// 为 `Messages` 枚举定义处理程序
+impl Handler&lt;Messages&gt; for MyActor {
+    type Result = Responses;
+
+    fn handle(&amp;mut self, msg: Messages, _ctx: &amp;mut Context&lt;Self&gt;) -&gt; Self::Result {
+        match msg {
+            Messages::Ping =&gt; Responses::GotPing,
+            Messages::Pong =&gt; Responses::GotPong,
+        }
+    }
+}
+
+#[actix_rt::main]
+async fn main() {
+    // 在当前线程启动 MyActor
+    let addr = MyActor.start();
+
+    // 发送 Ping 消息。
+    // send() 消息返回 Future 对象，可解析出消息结果
+    let ping_future = addr.send(Messages::Ping).await;
+    let pong_future = addr.send(Messages::Pong).await;
+
+    match pong_future {
+        Ok(res) =&gt; match res {
+            Responses::GotPing =&gt; println!(&quot;Ping received&quot;),
+            Responses::GotPong =&gt; println!(&quot;Pong received&quot;),
+        },
+        Err(e) =&gt; println!(&quot;Actor is probably dead: {}&quot;, e),
+    }
+
+    match ping_future {
+        Ok(res) =&gt; match res {
+            Responses::GotPing =&gt; println!(&quot;Ping received&quot;),
+            Responses::GotPong =&gt; println!(&quot;Pong received&quot;),
+        },
+        Err(e) =&gt; println!(&quot;Actor is probably dead: {}&quot;, e),
+    }
+}
+</code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="sec-1-getting-started.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="sec-3-address.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="sec-1-getting-started.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="sec-3-address.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if (getComputedStyle(document.querySelector(".fa")).fontFamily !== "FontAwesome") {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = '_FontAwesome/css/font-awesome.css';
+                document.head.insertBefore(link, document.head.firstChild)
+            }
+        </script>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script>
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-123031709-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+
+        
+        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
+        
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>
